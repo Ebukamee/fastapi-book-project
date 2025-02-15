@@ -1,14 +1,17 @@
-name: CI Pipeline
+name: CD Pipeline
 on:
-  pull_request:
+  push:
     branches: [main]
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
-      - run: pip install -r requirements.txt
-      - run: pytest
+      - name: Deploy
+        run: |
+          ssh -i key.pem ubuntu@ec2-ip <<EOF
+          cd /app
+          git pull origin main
+          docker-compose down
+          docker-compose up -d
+          EOF
