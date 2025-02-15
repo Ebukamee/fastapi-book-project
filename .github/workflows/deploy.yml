@@ -34,7 +34,8 @@ jobs:
           # Deploy using SSH with password authentication
           sshpass -p "hng12uka" ssh -o StrictHostKeyChecking=no uka@54.245.237.108 << 'EOF'
             cd fastapi-book-project/  # Navigate to your app directory
-            git pull origin main  # Pull the latest code from GitHub
+            git fetch origin main
+            git reset --hard origin/main # Pull the latest code from GitHub
             
             # Create the virtual environment if it doesn't exist
             if [ ! -d "venv" ]; then
