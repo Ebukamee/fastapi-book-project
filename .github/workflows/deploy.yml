@@ -1,24 +1,14 @@
-name: CD Pipeline
-
+name: CI Pipeline
 on:
-  push:
-    branches:
-      - main
-
+  pull_request:
+    branches: [main]
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: SSH into AWS and Deploy
-        uses: appleboy/ssh-action@v0.1.6
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
-          host: ${{ secrets.AWS_HOST }}
-          username: ubuntu
-          key: ${{ secrets.AWS_SSH_KEY }}
-          script: |
-            cd /home/ubuntu/fastapi-book-project
-            git pull origin main
-            source venv/bin/activate
-            pip install -r requirements.txt
-            sudo systemctl restart app
+          python-version: 3.9
+      - run: pip install -r requirements.txt
+      - run: pytest
